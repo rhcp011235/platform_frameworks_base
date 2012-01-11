@@ -1,6 +1,7 @@
 package com.android.systemui.statusbar.powercontrols;
 
 import com.android.systemui.R;
+import com.android.internal.telephony.Phone;
 
 import android.app.AlertDialog;
 import android.app.AlertDialog.Builder;
@@ -13,6 +14,7 @@ import android.net.ConnectivityManager;
 import android.os.Handler;
 import android.provider.Settings;
 import android.provider.Settings.Secure;
+import android.telephony.TelephonyManager;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -27,20 +29,20 @@ public final class MobileDataSettingButton extends PowerControls
 {
   private MobileDataObserver mMobileDataObserver = new MobileDataObserver();
 
+  private void setLTEDataEnabled(boolean paramBoolean)
+  {
+    TelephonyManager tm = (TelephonyManager) this.mContext.getSystemService(Context.TELEPHONY_SERVICE);
+    if (tm != null)
+    {
+      Log.i("MobileDataSettingButton", "setLTEDataEnabled: set to  = " + paramBoolean);
+      tm.LTEtoggle(paramBoolean);
+      Log.i("MobileDataSettingButton", "setLTEDataEnabled : TelephonyManager = null");
+    }
+  }
+
   public MobileDataSettingButton(Context paramContext, AttributeSet paramAttributeSet)
   {
     super(paramContext, paramAttributeSet);
-  }
-
-  private void setMobileDataEnabled(boolean paramBoolean)
-  {
-    ConnectivityManager localConnectivityManager = (ConnectivityManager)this.mContext.getSystemService("connectivity");
-    if (localConnectivityManager != null)
-    {
-      Log.i("MobileDataSettingButton", "setMobileDataEnabled: set to  = " + paramBoolean);
-      localConnectivityManager.setMobileDataEnabled(paramBoolean);
-      Log.i("MobileDataSettingButton", "setMobileDataEnabled : connectivityManager = null");
-    }
   }
 
   private void updateIcons()
@@ -64,7 +66,7 @@ public final class MobileDataSettingButton extends PowerControls
 
   private void updateStatus()
   {
-    if (1 == Settings.Secure.getInt(this.mContext.getContentResolver(), "mobile_data", 1))
+    if (Settings.System.getInt(this.mContext.getContentResolver(), "lte_toggle", 1) == 1)
     {
       setActivateStatus(1);
       updateIcons();
@@ -79,20 +81,22 @@ public final class MobileDataSettingButton extends PowerControls
   public void activate()
   {
     Log.e("MobileDataSettingButton", "activate()");
-    setMobileDataEnabled(true);
+    Settings.System.putInt(this.mContext.getContentResolver(), "lte_toggle", 1);
+    setLTEDataEnabled(true);
   }
 
   public void deactivate()
   {
     Log.e("MobileDataSettingButton", "deactivate()");
-    setMobileDataEnabled(false);
+    Settings.System.putInt(this.mContext.getContentResolver(), "lte_toggle", 0);
+    setLTEDataEnabled(false);
   }
 
   protected void onAttachedToWindow()
   {
     super.onAttachedToWindow();
     Log.e("MobileDataSettingButton", "onAttachedToWindow()");
-    this.mContext.getContentResolver().registerContentObserver(Settings.Secure.getUriFor("mobile_data"), false, this.mMobileDataObserver);
+    this.mContext.getContentResolver().registerContentObserver(Settings.Secure.getUriFor("preferred_network_mode"), false, this.mMobileDataObserver);
     updateStatus();
   }
 
