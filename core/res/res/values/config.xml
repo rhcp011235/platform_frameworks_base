@@ -477,8 +477,24 @@
          Zone N + 1:    array[N] <= LUX < infinity
 
          Must be overridden in platform specific overlays -->
-    <integer-array name="config_autoBrightnessLevels">
+   <!--  <integer-array name="config_autoBrightnessLevels">
+    </integer-array> -->
+
+<!-- Brightness hack -->
+<integer-array name="config_autoBrightnessLevels">
+        <item>6</item>
+        <item>14</item>
+        <item>30</item>
+        <item>68</item>
+        <item>154</item>
+        <item>346</item>
+        <item>778</item>
+        <item>1752</item>
+        <item>3941</item>
+        <item>8867</item>
     </integer-array>
+
+
 
 
     <!-- Minimum screen brightness allowed by the power manager. -->
@@ -488,8 +504,25 @@
          in the config_autoBrightnessLevels array.  This array should have size one greater
          than the size of the config_autoBrightnessLevels array.
          This must be overridden in platform specific overlays -->
-    <integer-array name="config_autoBrightnessLcdBacklightValues">
-    </integer-array>
+   
+<!--
+ <integer-array name="config_autoBrightnessLcdBacklightValues">
+    </integer-array> -->
+
+<!-- Hack again -->
+<integer-array name="config_autoBrightnessLcdBacklightValues">
+        <item>40</item>
+        <item>45</item>
+        <item>50</item>
+        <item>55</item>
+        <item>60</item>
+        <item>80</item>
+        <item>100</item>
+        <item>130</item>
+        <item>175</item>
+        <item>230</item>
+        <item>250</item>
+    </integer-array>  
 
     <!-- Array of output values for button backlight corresponding to the LUX values
          in the config_autoBrightnessLevels array.  This array should have size one greater
